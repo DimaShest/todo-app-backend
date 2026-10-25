@@ -12,7 +12,7 @@ from app.schemas.category import (
 )
 
 
-class CategoryNotFoundException(Exception):
+class CategoryNotFoundError(Exception):
     """Исключение при отсутствии категории в базе данных"""
 
 
@@ -46,24 +46,23 @@ class CategoryService:
         category_id: str,
         payload: CategoryUpdate,
     ) -> CategoryRead:
-        category_orm = self.repository.get_by_id(category_id)
+        category_for_update = self.repository.get_by_id(category_id)
 
-        if category_orm is None:
-            raise CategoryNotFoundException(
+        if category_for_update is None:
+            raise CategoryNotFoundError(
                 f"Категория с id = {category_id} не найдена в базе данных"
             )
 
-        if category_orm is not None:
-            category_orm.name = payload.name
-            self.db.commit()
+        category_for_update.name = payload.name
+        self.db.commit()
 
-        return CategoryRead.model_validate(category_orm)
+        return CategoryRead.model_validate(category_for_update)
 
     def delete_category(self, category_id: str) -> None:
         category_orm = self.repository.get_by_id(category_id)
 
         if category_orm is None:
-            raise CategoryNotFoundException(
+            raise CategoryNotFoundError(
                 f"Категория с id = {category_id} не найдена в базе данных"
             )
 

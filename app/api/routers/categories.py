@@ -14,7 +14,7 @@ from app.schemas.category import (
     CategoryUpdate,
 )
 from app.services.category import (
-    CategoryNotFoundException,
+    CategoryNotFoundError,
     CategoryService,
 )
 
@@ -57,7 +57,7 @@ def update_category(
 ) -> CategoryRead:
     try:
         return service.update_category(category_id, payload)
-    except CategoryNotFoundException:
+    except CategoryNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Категория не найдена",
@@ -74,7 +74,7 @@ def delete_category(
 ) -> None:
     try:
         return service.delete_category(category_id)
-    except CategoryNotFoundException:
+    except CategoryNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Категория не найдена",

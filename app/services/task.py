@@ -10,7 +10,7 @@ from app.schemas.task import (
 )
 
 
-class TaskNotFound(Exception):
+class TaskNotFoundError(Exception):
     """Исключение при отсутствии задачи в базе данных"""
 
 
@@ -40,7 +40,7 @@ class TaskService:
         task_for_update = self.repository.get_by_id(task_id)
 
         if task_for_update is None:
-            raise TaskNotFound(f"Задача с id = {task_id} не найдена в базе данных")
+            raise TaskNotFoundError(f"Задача с id = {task_id} не найдена в базе данных")
         if payload.title is not None:
             task_for_update.title = payload.title
         if payload.completed is not None:
@@ -53,7 +53,7 @@ class TaskService:
         task_for_delete = self.repository.get_by_id(task_id)
 
         if task_for_delete is None:
-            raise TaskNotFound(f"Задача с id = {task_id} не найдена в базе данных")
+            raise TaskNotFoundError(f"Задача с id = {task_id} не найдена в базе данных")
 
         self.repository.delete(task_for_delete)
         self.db.commit()

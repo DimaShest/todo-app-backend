@@ -14,7 +14,7 @@ from app.schemas.task import (
     TaskUpdate,
 )
 from app.services.task import (
-    TaskNotFound,
+    TaskNotFoundError,
     TaskService,
 )
 
@@ -51,7 +51,7 @@ def update_task(
 ) -> TaskRead:
     try:
         return service.update_task(task_id, payload)
-    except TaskNotFound:
+    except TaskNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Задача не найдена",
@@ -68,7 +68,7 @@ def delete_task(
 ) -> None:
     try:
         service.delete_task(task_id)
-    except TaskNotFound:
+    except TaskNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Задача не найдена",
